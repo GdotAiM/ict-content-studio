@@ -97,6 +97,15 @@ python3 scripts/log_post.py add --topic "FVG after PDH sweep" --concepts fvg,pdh
 | Weekly | `ict-recap-agent` for process review. |
 (During US winter time (EST), add 1 hour to SAST times.)
 
+## Manual levels input
+Copy `inputs/levels_TEMPLATE.md` to `inputs/levels_YYYY-MM-DD.md`, fill it from TradingView
+(CAPITALCOM:US100), and validate with `python3 scripts/load_levels.py inputs/levels_YYYY-MM-DD.md`.
+`ict-premarket-brief` prefers this file over web sources. Daily files are gitignored.
+
+## TradingView access
+TODO: A direct TradingView connection is being evaluated. Until then, levels are entered manually
+via `inputs/levels_YYYY-MM-DD.md`.
+
 ## Compliance stance
 - Educational only; no buy/sell signals, entries/stops/targets for live markets, profit promises, or "guaranteed" language.
 - Paper trading only, labelled as such.

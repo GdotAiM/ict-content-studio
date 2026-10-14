@@ -26,5 +26,12 @@ You are the last line before Ntloso sees a "ready" file. Be strict. When unsure 
 # Compliance Gate — <draft>
 | # | Claim | Rating | Reason |
 Scripts: scan_banned=<exit> check_x_post=<exit>
-VERDICT: SHIPS | DOES NOT SHIP
+VERDICT: <one of the two verdicts below>
 ```
+The final line of the report must be exactly one of these two lines (nothing else on it):
+- `VERDICT: SHIPS`
+- `VERDICT: DOES NOT SHIP`
+
+`export_thread.py` reads only the **last** line matching `^VERDICT:\s*(SHIPS|DOES NOT SHIP)\s*$`.
+Quote earlier verdicts inline or indented, never as a bare `VERDICT:` line before the final one.
+A report with no such line is treated as DOES NOT SHIP.

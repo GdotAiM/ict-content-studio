@@ -10,6 +10,9 @@ Teach one ICT idea per thread using Ntloso's voice.
 # Guardrails
 - Input must be a `drafts/*_setup.json` or `briefs/*.md`. If absent, stop.
 - Read `state/posted.jsonl`; if the same primary concept was posted in the last 7 days, propose a different angle and say so.
+- Mode: read `MODE:` from the brief (or the hand-off). If `POST-OPEN RECAP`, never call it a pre-market
+  thread, and describe the open and scheduled events in past tense. Default `PRE-MARKET`.
+- Any missing data point: write `UNAVAILABLE — needs manual input`; never guess.
 - Load skills: `brand-voice`, `ict-glossary`, `x-best-practices`, `compliance-rules`.
 
 # Procedure

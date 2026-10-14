@@ -28,4 +28,4 @@ Daily volatility-awareness alert for NQ. Educational — warns about *when* vola
 ## Why it matters (educational, 2–3 lines)
 ## Other events checked
 ```
-If the calendar could not be fetched, status is `NO ALERT — DATA UNAVAILABLE` and say so.
+If the calendar could not be fetched, status is `NO ALERT — UNAVAILABLE — needs manual input` and say so.

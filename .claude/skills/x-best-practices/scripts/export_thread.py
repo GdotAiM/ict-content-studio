@@ -2,7 +2,9 @@
 """Assemble gate-approved posts into ready/YYYY-MM-DD_HHMM_thread.md.
 
 Refuses to export unless:
-  * the gate report contains 'VERDICT: SHIPS' (and not 'DOES NOT SHIP'),
+  * the LAST line of the gate report matching ^VERDICT:\s*(SHIPS|DOES NOT SHIP)\s*$
+    is 'VERDICT: SHIPS' (template text / quoted earlier verdicts are ignored;
+    no such line = blocked),
   * every post passes check_x_post length rules,
   * scan_banned finds no banned phrases.
 This script only writes a file. It never posts anywhere.
@@ -10,6 +12,7 @@ This script only writes a file. It never posts anywhere.
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -24,9 +27,21 @@ from scan_banned import load_patterns, scan_text  # noqa: E402
 SAST = ZoneInfo("Africa/Johannesburg")
 
 
+VERDICT_RE = re.compile(r"^VERDICT:\s*(SHIPS|DOES NOT SHIP)\s*$")
+
+
+def final_verdict(report: str) -> str | None:
+    """Return the verdict from the last strictly-formatted VERDICT line, or None."""
+    verdict = None
+    for line in report.splitlines():
+        m = VERDICT_RE.match(line)
+        if m:
+            verdict = m.group(1)
+    return verdict
+
+
 def gate_ships(report: str) -> bool:
-    up = report.upper()
-    return "VERDICT: SHIPS" in up and "DOES NOT SHIP" not in up
+    return final_verdict(report) == "SHIPS"
 
 
 def build(posts: list[str], stamp: datetime, source: str) -> str:

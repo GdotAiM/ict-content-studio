@@ -49,3 +49,31 @@ def test_blocked_on_banned_phrase(tmp_path):
 def test_missing_file(tmp_path):
     assert export_thread.main(["--file", str(tmp_path / "no.md"),
                                "--gate-report", str(_gate(tmp_path, "SHIPS"))]) == 2
+
+
+def _raw_gate(tmp_path, text):
+    g = tmp_path / "gate_raw.md"
+    g.write_text(text, encoding="utf-8")
+    return g
+
+
+def test_final_verdict_ships_despite_quoted_earlier_fail(tmp_path):
+    report = ("# Gate\nTemplate: VERDICT: SHIPS | DOES NOT SHIP\n"
+              "> VERDICT: DOES NOT SHIP\nVERDICT: DOES NOT SHIP\nFixed issues.\nVERDICT: SHIPS\n")
+    assert export_thread.gate_ships(report)
+    out = tmp_path / "ready"
+    assert export_thread.main(["--file", str(EXAMPLE), "--gate-report", str(_raw_gate(tmp_path, report)),
+                               "--out-dir", str(out), "--timestamp", "2026-01-15 16:30"]) == 0
+
+
+def test_final_verdict_fail_after_earlier_ships():
+    assert not export_thread.gate_ships("VERDICT: SHIPS\nre-run\nVERDICT: DOES NOT SHIP\n")
+
+
+def test_missing_verdict_blocks(tmp_path):
+    for report in ("# Gate\nno verdict here\n", "VERDICT: SHIPS | DOES NOT SHIP\n", "VERDICT: SHIPS please\n"):
+        assert not export_thread.gate_ships(report)
+    out = tmp_path / "ready"
+    assert export_thread.main(["--file", str(EXAMPLE), "--gate-report",
+                               str(_raw_gate(tmp_path, "# Gate\n")), "--out-dir", str(out)]) == 1
+    assert not out.exists()

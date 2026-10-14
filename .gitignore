@@ -16,3 +16,6 @@ journal/*.md
 drafts/*
 ready/*
 !*/.gitkeep
+# Manual levels: keep only the template
+inputs/*
+!inputs/levels_TEMPLATE.md
