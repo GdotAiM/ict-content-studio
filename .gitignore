@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+*.key
+*.pem
+.DS_Store
+.claude/settings.local.json
+# Personal working output (keep folders, not daily content)
+briefs/*.md
+alerts/*.md
+journal/*.md
+drafts/*
+ready/*
+!*/.gitkeep

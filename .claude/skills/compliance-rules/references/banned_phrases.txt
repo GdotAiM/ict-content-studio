@@ -1,0 +1,27 @@
+# One pattern per line, case-insensitive Python regex. Lines starting with # are comments.
+guarantee(d|s)?
+risk[- ]free
+can'?t lose
+sure thing
+easy money
+free money
+get rich
+100% (win|accurate|sure)
+\bbuy now\b
+\bsell now\b
+\bgo long\b
+\bgo short\b
+\blong here\b
+\bshort here\b
+\bentry\s*(at|@)\s*\d
+\b(tp|take profit|stop loss|sl)\s*(at|@|:)\s*\d
+\bsignal(s)?\b
+copy my trades?
+join my (vip|group|signals)
+financial freedom
+quit your job
+(double|triple) your account
+printing( money)?
+\bmoon(ing)?\b
+not a signal but
+\bdm (me )?for\b
