@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+      - name: Example data passes the gate scripts
+        run: |
+          python3 .claude/skills/x-best-practices/scripts/check_x_post.py --file examples/thread_2026-01-15.md
+          python3 .claude/skills/compliance-rules/scripts/scan_banned.py --file examples/thread_2026-01-15.md
