@@ -18,3 +18,6 @@ Watermark text: "EDUCATIONAL • PAPER TRADE • NOT ADVICE"
 ```
 4. Include: session boxes, liquidity level line + "BSL/SSL taken", displacement arrow, PD array box (FVG/OB), killzone shading, midnight-open line.
 5. No entry/stop/target arrows, no P&L labels.
+
+# Mode: cheat-sheet
+Input: a concept (FVG, liquidity sweep, Silver Bullet, …) instead of a setup JSON. Output `drafts/YYYY-MM-DD_cheatsheet.md` following `templates/cheat-sheet.md`: one-image checklist (max 5 steps from `ict-glossary`) drawn on a past chart.

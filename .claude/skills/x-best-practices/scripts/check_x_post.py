@@ -5,11 +5,13 @@ Usage:
   printf '%s' "text" | check_x_post.py --stdin
   check_x_post.py --file drafts/2026-10-14_thread.md   # posts split on '---'
 Exit: 0 ok, 1 violation (too long or empty), 2 usage error.
+Hashtags: 0-1 per post recommended; more prints a WARN but does not change the exit code.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -17,12 +19,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from xtext import MAX_WEIGHTED, split_posts, weighted_length  # noqa: E402
 
 
+MAX_HASHTAGS = 1
+HASHTAG_RE = re.compile(r"(?<![\w&/])#\w*[^\W\d_]\w*")
+
+
+def count_hashtags(text: str) -> int:
+    return len(HASHTAG_RE.findall(text))
+
+
 def check(posts: list[str], limit: int = MAX_WEIGHTED) -> list[dict]:
     results = []
     for i, p in enumerate(posts, 1):
         n = weighted_length(p)
         results.append({"post": i, "weighted_length": n, "limit": limit,
-                        "ok": 0 < n <= limit, "over_by": max(0, n - limit)})
+                        "ok": 0 < n <= limit, "over_by": max(0, n - limit),
+                        "hashtags": (h := count_hashtags(p)),
+                        "warnings": [f"{h} hashtags (recommended 0-{MAX_HASHTAGS})"] if h > MAX_HASHTAGS else []})
     return results
 
 
@@ -56,6 +68,8 @@ def main(argv: list[str] | None = None) -> int:
             status = "OK  " if r["ok"] else "FAIL"
             extra = f" (over by {r['over_by']})" if r["over_by"] else ""
             print(f"{status} post {r['post']}: {r['weighted_length']}/{r['limit']}{extra}")
+            for w in r["warnings"]:
+                print(f"WARN post {r['post']}: {w}")
     return 0 if all(r["ok"] for r in results) else 1
 
 

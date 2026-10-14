@@ -81,3 +81,19 @@ def test_split_posts_strips_headers_and_comments():
 
 def test_example_thread_passes():
     assert run("--file", str(ROOT / "examples/thread_2026-01-15.md")).returncode == 0
+
+
+def test_hashtag_count():
+    assert check_x_post.count_hashtags("FVG study #ICT") == 1
+    assert check_x_post.count_hashtags("#ICT #NQ #trading") == 3
+    assert check_x_post.count_hashtags("no tags, item #1, a&#39;b, x.com/a#frag") == 0
+
+
+def test_hashtag_warning_not_error(tmp_path):
+    r = check_x_post.check(["one #ICT"])[0]
+    assert r["ok"] and r["warnings"] == []
+    r = check_x_post.check(["many #ICT #NQ"])[0]
+    assert r["ok"] and r["hashtags"] == 2 and r["warnings"]
+    p = subprocess.run([sys.executable, str(SCRIPT), "--stdin"], input="FVG review #ICT #NQ #US100",
+                       capture_output=True, text=True)
+    assert p.returncode == 0 and "WARN post 1" in p.stdout

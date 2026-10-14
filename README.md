@@ -43,13 +43,17 @@ flowchart LR
 ## Layout
 ```
 CLAUDE.md                      project rules (hard compliance rules)
-.claude/agents/                8 subagents (YAML front matter + SOP)
+.claude/agents/                12 subagents (YAML front matter + SOP)
 .claude/skills/
   ict-glossary/                original ICT definitions
   brand-voice/                 voice guide (fill in TODOs)
   x-best-practices/scripts/    check_x_post.py, export_thread.py, xtext.py
   compliance-rules/scripts/    scan_banned.py + references/banned_phrases.txt
-scripts/log_post.py            posted-topic memory
+scripts/log_post.py            posted-topic memory (+ optional likes/impressions)
+scripts/et_to_sast.py          DST-correct ET → SAST conversion
+templates/                     term-of-the-day, cheat-sheet
+docs/posting-schedule.md       suggested posting slots (SAST)
+research/                      dated X research snapshots (.md + .json)
 state/posted.jsonl, SCHEMA.md
 briefs/ alerts/ journal/ drafts/ ready/   working dirs (content git-ignored)
 examples/                      EXAMPLE DATA (fabricated)
@@ -75,6 +79,10 @@ Ask Claude Code in plain language, naming the agent:
 | chart-annotation-writer | "Use chart-annotation-writer on drafts/2026-10-14_setup.json" |
 | ict-recap-agent | "Use ict-recap-agent for this week's journal" |
 | compliance-gate | "Run compliance-gate on drafts/2026-10-14_thread.md" |
+| paper-journal-writer | "Use paper-journal-writer for week 42" (losses included, every trade PAPER) |
+| no-trade-day-writer | "Use no-trade-day-writer on journal/2026-10-14.md" |
+| ict-source-curator | "Use ict-source-curator on 'silver bullet', <ICT video URL> at 14:32" |
+| x-research-scout | "Run x-research-scout for this month" (read-only; never posts/likes/follows) |
 
 Scripts directly:
 ```bash
@@ -83,7 +91,8 @@ python3 .claude/skills/x-best-practices/scripts/check_x_post.py --file drafts/20
 python3 .claude/skills/compliance-rules/scripts/scan_banned.py --file drafts/2026-10-14_thread.md
 python3 .claude/skills/x-best-practices/scripts/export_thread.py --file drafts/2026-10-14_thread.md --gate-report drafts/2026-10-14_gate.md
 python3 scripts/log_post.py check --concepts fvg,pdh --days 7
-python3 scripts/log_post.py add --topic "FVG after PDH sweep" --concepts fvg,pdh --format thread --url https://x.com/...
+python3 scripts/log_post.py add --topic "FVG after PDH sweep" --concepts fvg,pdh --format thread --url https://x.com/... [--likes 12 --impressions 900]
+python3 scripts/et_to_sast.py 09:30 10:00 11:00 --date 2026-10-14
 ```
 
 ## Daily workflow (SAST)
@@ -96,6 +105,13 @@ python3 scripts/log_post.py add --topic "FVG after PDH sweep" --concepts fvg,pdh
 | You | Read it, screenshot + annotate the chart, **post manually on X**, then `log_post.py add`. |
 | Weekly | `ict-recap-agent` for process review. |
 (During US winter time (EST), add 1 hour to SAST times.)
+
+## Posting schedule
+Suggested slots (details in [docs/posting-schedule.md](docs/posting-schedule.md); you still post by hand):
+- **~13:00–14:00 SAST** pre-open concept post (term of the day, cheat sheet, curated ICT source).
+- **~19:00–20:00 SAST** session review of the 09:30–11:00 ET session, or a no-trade-day post.
+- **Saturday** weekly `paper-journal-writer` thread, losses included.
+- Hashtags: 0–1 per post.
 
 ## Manual levels input
 Copy `inputs/levels_TEMPLATE.md` to `inputs/levels_YYYY-MM-DD.md`, fill it from TradingView

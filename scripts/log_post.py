@@ -3,7 +3,7 @@
 and check for recent repeats. Does not post anything.
 
   log_post.py add --topic "FVG after PDH sweep" --concepts FVG,PDH,displacement \
-      --format thread --ready-file ready/2026-10-14_1600_thread.md [--url https://x.com/...]
+      --format thread --ready-file ready/2026-10-14_1600_thread.md [--url https://x.com/...] [--likes 12 --impressions 900]
   log_post.py check --concepts FVG,PDH [--days 7]     # exit 1 if any concept used recently
   log_post.py list [--days 30]
 """
@@ -43,15 +43,22 @@ def recent_overlap(records: list[dict], concepts: list[str], days: int, now: dat
 
 
 def make_record(topic: str, concepts: list[str], fmt: str, now: datetime,
-                ready_file: str | None = None, url: str | None = None) -> dict:
+                ready_file: str | None = None, url: str | None = None,
+                likes: int | None = None, impressions: int | None = None) -> dict:
     if not topic.strip():
         raise ValueError("topic required")
     if fmt not in FORMATS:
         raise ValueError(f"format must be one of {sorted(FORMATS)}")
     if not concepts:
         raise ValueError("at least one concept required")
-    return {"posted_at": now.isoformat(timespec="minutes"), "platform": "x", "format": fmt,
-            "topic": topic.strip(), "concepts": concepts, "ready_file": ready_file, "url": url}
+    rec = {"posted_at": now.isoformat(timespec="minutes"), "platform": "x", "format": fmt,
+           "topic": topic.strip(), "concepts": concepts, "ready_file": ready_file, "url": url}
+    for k, v in (("likes", likes), ("impressions", impressions)):
+        if v is not None:
+            if v < 0:
+                raise ValueError(f"{k} must be >= 0")
+            rec[k] = v  # optional, entered manually by Ntloso
+    return rec
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -65,6 +72,8 @@ def main(argv: list[str] | None = None) -> int:
     a.add_argument("--format", default="thread")
     a.add_argument("--ready-file")
     a.add_argument("--url")
+    a.add_argument("--likes", type=int, help="optional, copied manually from X")
+    a.add_argument("--impressions", type=int, help="optional, copied manually from X")
     c = sub.add_parser("check")
     c.add_argument("--concepts", required=True)
     c.add_argument("--days", type=int, default=7)
@@ -80,7 +89,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "add":
         try:
-            rec = make_record(args.topic, _norm(args.concepts), args.format, now, args.ready_file, args.url)
+            rec = make_record(args.topic, _norm(args.concepts), args.format, now, args.ready_file, args.url,
+                              args.likes, args.impressions)
         except ValueError as e:
             print(f"error: {e}", file=sys.stderr)
             return 2

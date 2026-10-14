@@ -39,3 +39,25 @@ def test_bad_format(tmp_path):
 
 def test_check_empty_state(tmp_path):
     assert log_post.main(["--state", str(tmp_path / "none.jsonl"), "check", "--concepts", "fvg"]) == 0
+
+
+def test_optional_metrics(tmp_path):
+    s = tmp_path / "p.jsonl"
+    assert log_post.main(["--state", str(s), "--now", NOW, "add", "--topic", "t", "--concepts", "fvg",
+                          "--likes", "12", "--impressions", "900"]) == 0
+    rec = json.loads(s.read_text().strip())
+    assert rec["likes"] == 12 and rec["impressions"] == 900
+
+
+def test_metrics_omitted_by_default(tmp_path):
+    s = tmp_path / "p.jsonl"
+    _add(s, "t", "fvg")
+    rec = json.loads(s.read_text().strip())
+    assert "likes" not in rec and "impressions" not in rec
+
+
+def test_negative_metrics_rejected(tmp_path):
+    s = tmp_path / "p.jsonl"
+    assert log_post.main(["--state", str(s), "--now", NOW, "add", "--topic", "t", "--concepts", "fvg",
+                          "--likes", "-1"]) == 2
+    assert not s.exists()

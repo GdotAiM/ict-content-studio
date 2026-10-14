@@ -12,7 +12,7 @@
 ## Style
 - Short sentences. One idea per post.
 - Emoji: max 1 per post (default 📊 or 🧠). TODO(Ntloso): preferred emoji.
-- Hashtags: max 2, at the end. Defaults: #ICT #NQ. TODO(Ntloso).
+- Hashtags: 0–1 per post, at the end (top ICT accounts use none). Default: none, or #ICT. `check_x_post.py` warns above 1. TODO(Ntloso).
 - Abbreviations defined on first use (e.g. "fair value gap (FVG)").
 - Times written as "09:30 ET / 15:30 SAST".
 

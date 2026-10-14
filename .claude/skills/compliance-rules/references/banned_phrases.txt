@@ -25,3 +25,15 @@ printing( money)?
 \bmoon(ing)?\b
 not a signal but
 \bdm (me )?for\b
+# --- Added 2026-10-14 from research/x-ict-creators-2026-10-14.md ---
+# Win-rate claims
+\d+(\.\d+)?\s*%\s*win\s*-?\s*rate
+\bwin\s*-?\s*rate\s*(of|is|:|=)?\s*\d
+# BUY / SELL call labels (uppercase only, so "buy-side liquidity" stays clean)
+(?-i:\b(BUY|SELL)\b)(?!-)
+# Brag / tally language
+\bbanger( trade)?s?\b
+[+]?\d+(\.\d+)?\s*handles?\b
+# Prop-firm / affiliate discount codes
+\b(promo|discount|affiliate|coupon|referral)\s+code\b
+\buse (my )?code\b

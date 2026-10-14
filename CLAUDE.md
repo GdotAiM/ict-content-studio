@@ -28,4 +28,8 @@ lives in **Africa/Johannesburg (SAST, UTC+2)**. Markets are referenced in **New 
 - Use `ict-glossary` for terminology and `brand-voice` for tone. Do not invent ICT terms.
 - Times: ET is UTC-4 (EDT) / UTC-5 (EST); SAST is fixed UTC+2. So 09:30 ET = 15:30 SAST in EDT, 16:30 SAST in EST.
 - Redact account numbers, broker IDs, and personal data before putting journal content into context.
+- ET→SAST conversions are **computed, not guessed**: `python3 scripts/et_to_sast.py 09:30 --date YYYY-MM-DD`.
+- Hashtags: 0–1 per post (`check_x_post.py` warns above 1).
+- Posting slots (suggestions; Ntloso posts by hand): see `docs/posting-schedule.md` — ~13:00–14:00 SAST pre-open concept, ~19:00–20:00 SAST session review, Saturday paper-journal thread (EDT season; +1h in EST).
+- Templates live in `templates/` (term of the day, cheat sheet). Research snapshots live in `research/` (refreshed monthly by `x-research-scout`, read-only).
 - If a required input is missing (no brief, no journal entry), **stop and say so** — do not fabricate.
